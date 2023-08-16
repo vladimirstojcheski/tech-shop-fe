@@ -1,30 +1,32 @@
 <script>
+import axios from "axios";
+
 export default {
   name: "Filter",
   data () {
     return {
       selected: [],
+      manufacturers: []
     }
+  },
+  async mounted() {
+    await axios.get('/api/manufacturers/' + 2)
+        .then(data => this.manufacturers = data.data)
+        .catch(err => console.log(err))
   },
   methods: {
     setManufacturers() {
+      let manu = {"manufacturers" : []};
       if (this.selected.length === 0) {
-        const query = Object.assign({}, this.$route.query);
-        console.log(query)
-        delete query.manufacturers
-        console.log(query)
-        this.$router.replace({ query });
-        this.$emit('filterManu')
+        this.$emit('filterManu', manu)
       } else {
         let values = ""
         const iterator = this.selected.values()
         for (const value of iterator) {
           values += value + ","
+          manu.manufacturers.push(value)
         }
-        values = values.substring(0, values.length - 1)
-        console.log(values)
-        this.$router.push("?manufacturers=" + values)
-        this.$emit('filterManu', [values])
+        this.$emit('filterManu', manu)
       }
     }
   }
@@ -40,16 +42,13 @@ export default {
   </div>
   <div class="row">
     <div class="col">
-      <v-checkbox v-on:Change="setManufacturers"
-          v-model="selected"
-          label="John"
-          value="John"
-      ></v-checkbox>
-      <v-checkbox v-on:Change="setManufacturers"
-          v-model="selected"
-          label="Jacob"
-          value="Jacob"
-      ></v-checkbox>
+      <div v-for="manu in manufacturers">
+        <v-checkbox v-on:Change="setManufacturers"
+                    v-model="selected"
+                    :label="manu.name"
+                    :value="manu.id"
+        ></v-checkbox>
+      </div>
     </div>
   </div>
 </template>
