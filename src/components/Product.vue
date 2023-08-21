@@ -2,11 +2,6 @@
 
 export default {
   props: ["product"],
-  data() {
-    return {
-      products: []
-    }
-  }
 }
 </script>
 
@@ -27,18 +22,25 @@ export default {
     </v-card-title>
 
     <v-card-subtitle>
-      {{ product.description }}
+      {{ product.price }}$
     </v-card-subtitle>
     </div>
     <v-card-actions>
+      <router-link
+          color="orange-lighten-2"
+          variant="text"
+       :to="'product/' + product.id">
+        Read more
+      </router-link>
+
+      <v-spacer></v-spacer>
+
       <v-btn
           color="orange-lighten-2"
           variant="text"
       >
-        Explore
+        Add to cart
       </v-btn>
-
-      <v-spacer></v-spacer>
 
     </v-card-actions>
   </v-card>

@@ -3,16 +3,12 @@ import axios from "axios";
 
 export default {
   name: "Filter",
+  props: ["manufacturersToFilter"],
   data () {
     return {
       selected: [],
       manufacturers: []
     }
-  },
-  async mounted() {
-    await axios.get('/api/manufacturers/' + 2)
-        .then(data => this.manufacturers = data.data)
-        .catch(err => console.log(err))
   },
   methods: {
     setManufacturers() {
@@ -26,6 +22,9 @@ export default {
           values += value + ","
           manu.manufacturers.push(value)
         }
+        const query = this.$router.query
+        query.manufacturer = this.selected.join(',');
+        this.$router.push({ path: '/', query });
         this.$emit('filterManu', manu)
       }
     }
@@ -42,7 +41,7 @@ export default {
   </div>
   <div class="row">
     <div class="col">
-      <div v-for="manu in manufacturers">
+      <div v-for="manu in manufacturersToFilter">
         <v-checkbox v-on:Change="setManufacturers"
                     v-model="selected"
                     :label="manu.name"

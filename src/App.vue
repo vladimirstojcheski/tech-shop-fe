@@ -1,7 +1,7 @@
 <script setup>
 import Shop from "@/components/Shop.vue";
 import Header from "@/components/Header.vue";
-
+import { RouterView } from "vue-router"
 
 </script>
 
@@ -11,7 +11,7 @@ import Header from "@/components/Header.vue";
   </header>
 
   <main>
-    <Shop />
+    <RouterView />
   </main>
 </template>
 

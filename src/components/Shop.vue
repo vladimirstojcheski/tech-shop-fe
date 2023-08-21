@@ -7,23 +7,32 @@ export class ProductModel {
   search;
   constructor() {
     this.search = {
-      "manufacturers" : []
+      "manufacturers" : [],
+      "category" : 0,
+      "manufacturersToFilter" : [],
+      "query" : ''
     }
   }
 
 }
 export default {
   components: {Filter, Product},
+  props: ["category"],
   data() {
     return {
       products: [],
-      productModel: new ProductModel()
+      productModel: new ProductModel(),
+      manufacturersToFilter: []
     }
   },
   async mounted() {
-    await axios.post('/api/products/all', this.productModel)
-        .then(data => this.products = data.data)
-        .catch(err => console.log(err))
+    this.$route.path,async (to, from) => {
+      await this.getProducts(to, from)
+    }
+    this.$watch( ()=> this.$route.query.category,async (value) => {
+      console.log(value)
+      await this.getProducts(value)
+    })
   },
   methods: {
       async updateProducts(event) {
@@ -40,7 +49,20 @@ export default {
             this.products[i].show = true;
           }
         }
+      },
+    async getProducts(category) {
+      this.productModel.search.category = Number(category)
+      await axios.post('/api/products/all', this.productModel)
+          .then(data => this.products = data.data)
+          .catch(err => console.log(err))
+      this.productModel.search.manufacturersToFilter = []
+      for (const product of this.products) {
+        this.productModel.search.manufacturersToFilter.push(product.manufacturer_id)
       }
+      await axios.post('/api/manufacturers/all', this.productModel)
+          .then(data => this.manufacturersToFilter = data.data)
+          .catch(err => console.log(err))
+    }
   }
 }
 
@@ -50,7 +72,7 @@ export default {
   <div class="container-fluid text-center">
     <div class="row">
       <div class="col-xxl-1">
-        <Filter @filterManu="updateProducts"/>
+        <Filter @filterManu="updateProducts" :manufacturersToFilter="manufacturersToFilter"/>
 <!--        <v-btn v-on:Click="showManu">Filter</v-btn>-->
 
       </div>

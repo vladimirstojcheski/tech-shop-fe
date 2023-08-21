@@ -11,10 +11,11 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import {createRouter, createWebHistory} from 'vue-router'
 import Shop from "@/components/Shop.vue";
+// import ProductDetails from "@/components/ProductDetails.vue";
 
 const routes = [
-    { path: '/', component: App },
-    { path: '/prod', component: Shop}
+    { path: '/', component: Shop, name: "Home" },
+    { path: '/product/:id', component: () => import('@/components/ProductDetails.vue'), name: "ProductDetails"}
 ]
 
 const router = createRouter({
