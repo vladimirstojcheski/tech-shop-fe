@@ -2,6 +2,7 @@
 import Product from "@/components/Product.vue";
 import Filter from "@/components/Filter.vue"
 import axios from "axios";
+import {mapState} from "vuex";
 
 export class ProductModel {
   search;
@@ -25,41 +26,49 @@ export default {
       manufacturersToFilter: []
     }
   },
+  async created() {
+    this.$store.dispatch('updateQuery', this.$route.query);
+    await this.getProducts(this.$route.query)
+  },
   async mounted() {
-    this.$route.path,async (to, from) => {
-      await this.getProducts(to, from)
-    }
-    this.$watch( ()=> this.$route.query.category,async (value) => {
-      console.log(value)
-      await this.getProducts(value)
+    this.$watch( ()=> this.$route.query,async (value) => {
+      await this.getProducts(this.$route.query)
     })
   },
   methods: {
-      async updateProducts(event) {
-
-        if (event === undefined) {
-          for (let i = 0; i < this.products.length; i++) {
-            this.products[i].show = true
-          }
-        } else {
-          this.productModel.search.manufacturers = event.manufacturers
-          await axios.post('/api/products/all', this.productModel)
-              .then(data => this.products = data.data)
-          for (let i = 0; i < this.products.length; i++) {
-            this.products[i].show = true;
-          }
+    async updateProducts(event) {
+      if (event === undefined) {
+        for (let i = 0; i < this.products.length; i++) {
+          this.products[i].show = true
         }
-      },
-    async getProducts(category) {
-      this.productModel.search.category = Number(category)
+      } else {
+        this.productModel.search.manufacturers = event.manufacturers
+        await axios.post('/api/products/all', this.productModel)
+            .then(data => this.products = data.data)
+        for (let i = 0; i < this.products.length; i++) {
+          this.products[i].show = true;
+        }
+      }
+    },
+
+    async getProducts(query) {
+      if (query.category !== undefined && query.category !== '') {
+        this.productModel.search.category = Number(query.category)
+      }
+      if (query.manufacturers !== undefined && query.manufacturers.length > 0) {
+        let manu = []
+        for (const value of query.manufacturers.split(',')) {
+          manu.push(Number(value))
+        }
+        this.productModel.search.manufacturers = manu
+      }
       await axios.post('/api/products/all', this.productModel)
           .then(data => this.products = data.data)
           .catch(err => console.log(err))
-      this.productModel.search.manufacturersToFilter = []
       for (const product of this.products) {
         this.productModel.search.manufacturersToFilter.push(product.manufacturer_id)
       }
-      await axios.post('/api/manufacturers/all', this.productModel)
+      await axios.get('/api/manufacturers/' + query.category)
           .then(data => this.manufacturersToFilter = data.data)
           .catch(err => console.log(err))
     }

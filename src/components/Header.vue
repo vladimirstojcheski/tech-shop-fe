@@ -1,5 +1,6 @@
 <script>
 import axios from "axios";
+import {mapActions, mapMutations} from "vuex";
 
 export default {
   data: () => ({
@@ -20,10 +21,12 @@ export default {
         .catch(err => console.log(err))
   },
   methods: {
+    ...mapActions(["updateQuery"]),
     selectSection(item) {
       const query = {}
       query.category = item.id
-      this.$router.push({ path: '', query });
+      this.$store.dispatch('updateQuery', query);
+      this.$router.push({ path: '/', query });
     }
   }
 }

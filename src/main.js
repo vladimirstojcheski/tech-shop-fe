@@ -11,6 +11,8 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import {createRouter, createWebHistory} from 'vue-router'
 import Shop from "@/components/Shop.vue";
+import store from "@/store";
+import Vuex from 'vuex';
 // import ProductDetails from "@/components/ProductDetails.vue";
 
 const routes = [
@@ -30,5 +32,5 @@ const vuetify= createVuetify({
     ssr: true,
 })
 
-createApp(App).use(router).use(vuetify).mount("#app")
+createApp(App).use(router).use(store).use(vuetify).mount("#app")
 

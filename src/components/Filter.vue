@@ -1,35 +1,41 @@
 <script>
 import axios from "axios";
+import { mapMutations } from "vuex";
 
 export default {
   name: "Filter",
   props: ["manufacturersToFilter"],
-  data () {
+  data() {
     return {
       selected: [],
       manufacturers: []
+    };
+  },
+  created() {
+    let selected = this.$route.query.manufacturers;
+    if (selected !== undefined) {
+      const selectedArray = selected.split(",");
+      this.selected = selectedArray.map(item => Number(item));
+      this.manufacturers = [...this.selected];
     }
   },
   methods: {
+    ...mapMutations(['updateQuery']),
     setManufacturers() {
-      let manu = {"manufacturers" : []};
+      let query = { ...this.$store.state.query };
+      let manu = { manufacturers: [] };
       if (this.selected.length === 0) {
-        this.$emit('filterManu', manu)
+        query.manufacturers = undefined;
       } else {
-        let values = ""
-        const iterator = this.selected.values()
-        for (const value of iterator) {
-          values += value + ","
-          manu.manufacturers.push(value)
-        }
-        const query = this.$router.query
-        query.manufacturer = this.selected.join(',');
-        this.$router.push({ path: '/', query });
-        this.$emit('filterManu', manu)
+        query.manufacturers = this.selected.join(',');
+        manu.manufacturers = this.selected;
       }
+      this.updateQuery(query);
+      this.$router.push({ path: '/', query });
+      this.$emit('filterManu', manu);
     }
   }
-}
+};
 </script>
 
 <template>
