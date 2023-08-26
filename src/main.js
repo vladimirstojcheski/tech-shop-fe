@@ -13,11 +13,13 @@ import {createRouter, createWebHistory} from 'vue-router'
 import Shop from "@/components/Shop.vue";
 import store from "@/store";
 import Vuex from 'vuex';
+import AddProduct from "@/components/AddProduct.vue";
 // import ProductDetails from "@/components/ProductDetails.vue";
 
 const routes = [
     { path: '/', component: Shop, name: "Home" },
-    { path: '/product/:id', component: () => import('@/components/ProductDetails.vue'), name: "ProductDetails"}
+    { path: '/product/:id', component: () => import('@/components/ProductDetails.vue'), name: "ProductDetails"},
+    { path: '/product/add', component: AddProduct, name: "AddProduct"}
 ]
 
 const router = createRouter({
@@ -25,6 +27,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes// short for `routes: routes`
 })
+
 
 const vuetify= createVuetify({
     components,

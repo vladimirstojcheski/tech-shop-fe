@@ -67,7 +67,7 @@ export default {
       </div>
       <div class="col">
         {{ product[0].price }}$<hr>
-        {{ product[0].description }}
+        <div v-html="product[0].description"></div>
       </div>
       <div class="col border">
         <div class="row border-bottom padd">
