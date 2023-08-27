@@ -1,5 +1,26 @@
 /*@import './base.css';*/
 
+#app {
+    background-color: #ebebeb;
+    height: 955px;
+}
+.custom-card {
+    border-style: groove;
+    border-radius: 25px;
+    padding: 10px;
+    box-shadow: #181818;
+    background-color: white;
+}
+
+.custom-card-2 {
+    border-radius: 10px;
+    background-color: white;
+    padding: 20px;
+}
+
+* {
+    font-family: Arial, serif;
+}
 /*#app {*/
 /*  margin: 0 auto;*/
 /*  padding: 2rem;*/

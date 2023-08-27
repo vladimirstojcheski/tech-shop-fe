@@ -50,26 +50,32 @@ export default {
         country: data.address.country,
       };
     },
+    addToCart(product) {
+      console.log(product)
+      this.$store.dispatch('addProductToCart', product);
+      // Save cart data to local storage
+      localStorage.setItem('cart', JSON.stringify(this.$store.state.cart));
+    },
   },
 }
 </script>
 
 <template>
-  <div class="container">
-    <div class="row">
+  <div class="container ">
+    <div class="row custom-card-2 gx-5">
       <div class="col">
         <v-img
             :width="450"
             aspect-ratio="16/9"
             cover
-            src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+            :src="product[0].img"
         ></v-img>
       </div>
       <div class="col">
         {{ product[0].price }}$<hr>
         <div v-html="product[0].description"></div>
       </div>
-      <div class="col border">
+      <div class="col">
         <div class="row border-bottom padd">
           <div class="col">
             <b>Ship to</b>
@@ -87,7 +93,7 @@ export default {
         <div class="row paddd">
           <div class="col centered">
             <v-col cols="auto">
-              <v-btn color="primary" size="x-large">ADD TO CART</v-btn>
+              <v-btn @click="addToCart(product[0])" color="primary" size="x-large">ADD TO CART</v-btn>
             </v-col>
           </div>
         </div>
@@ -121,5 +127,6 @@ export default {
 .border {
   height: 100%;
 }
+.container {}
 
 </style>

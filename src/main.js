@@ -14,12 +14,14 @@ import Shop from "@/components/Shop.vue";
 import store from "@/store";
 import Vuex from 'vuex';
 import AddProduct from "@/components/AddProduct.vue";
+import ShoppingCart from "@/components/ShoppingCart.vue";
 // import ProductDetails from "@/components/ProductDetails.vue";
 
 const routes = [
     { path: '/', component: Shop, name: "Home" },
     { path: '/product/:id', component: () => import('@/components/ProductDetails.vue'), name: "ProductDetails"},
-    { path: '/product/add', component: AddProduct, name: "AddProduct"}
+    { path: '/product/add', component: AddProduct, name: "AddProduct"},
+    { path: '/shopping-cart', component: ShoppingCart, name: "ShoppingCart"}
 ]
 
 const router = createRouter({

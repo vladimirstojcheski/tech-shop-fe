@@ -79,8 +79,8 @@ export default {
 
 <template>
   <div class="container-fluid text-center">
-    <div class="row">
-      <div class="col-xxl-1">
+    <div class="row gx-5">
+      <div class="col-xxl-2 custom-card">
         <Filter @filterManu="updateProducts" :manufacturersToFilter="manufacturersToFilter"/>
 <!--        <v-btn v-on:Click="showManu">Filter</v-btn>-->
 
@@ -107,5 +107,9 @@ export default {
 }
 .col {
   padding-bottom: 40px;
+}
+
+.custom-card {
+  height: 100%;
 }
 </style>

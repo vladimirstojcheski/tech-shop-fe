@@ -4,7 +4,8 @@ export default new Vuex.Store({
     state: {
         manufacturers: [],
         category: null,
-        query: {}
+        query: {},
+        cart: [],
     },
     mutations: {
         setManufacturers(state, manufacturers) {
@@ -15,7 +16,13 @@ export default new Vuex.Store({
         },
         setQuery(state, query) {
             state.query = query
-        }
+        },
+        addToCart(state, product) {
+            state.cart.push(product);
+        },
+        removeFromCart(state, productId) {
+            state.cart = state.cart.filter(item => item.id !== productId);
+        },
     },
     // You can add actions to update filters and commit mutations here
     actions: {
@@ -24,5 +31,16 @@ export default new Vuex.Store({
             // For now, directly commit the mutation
             commit('setQuery', query);
         },
-    }
+        addProductToCart({ commit, state }, product) {
+            if (!state.cart.find(item => item.id === product.id)) {
+                commit('addToCart', product);
+            }
+        },
+        removeProductFromCart({ commit }, productId) {
+            commit('removeFromCart', productId);
+        },
+    },
+    getters: {
+        cartItems: state => state.cart,
+    },
 });

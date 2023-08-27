@@ -1,8 +1,18 @@
 <script>
 import axios from "axios";
-import {mapActions, mapMutations} from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 
 export default {
+  created() {
+    if (JSON.parse(localStorage.getItem('cart')).length > 0) {
+      console.log(JSON.parse(localStorage.getItem('cart')))
+      this.products = JSON.parse(localStorage.getItem('cart'))
+      for (let productId in this.products) {
+        const product = this.products[productId];
+        this.$store.dispatch('addProductToCart', product);
+      }
+    }
+  },
   data: () => ({
     query : '',
     items: [],
@@ -13,12 +23,18 @@ export default {
       'end',
       'center',
     ],
-    location: 'end',
+    location: 'end'
   }),
   async mounted() {
     await axios.get('/api/categories/all')
         .then(data => this.items = data.data)
         .catch(err => console.log(err))
+  },
+  computed: {
+    ...mapState(["cart"]),
+    cartItemsLength() {
+      return this.cart.length;
+    }
   },
   methods: {
     ...mapActions(["updateQuery"]),
@@ -27,8 +43,11 @@ export default {
       query.category = item.id
       this.$store.dispatch('updateQuery', query);
       this.$router.push({ path: '/', query });
+    },
+    navigateHome() {
+      this.$router.push({ path: '/'})
     }
-  }
+  },
 }
 </script>
 
@@ -39,10 +58,10 @@ export default {
         flat
         rounded="0"
     >
-      <v-toolbar density="compact">
+      <v-toolbar class="header" density="compact">
         <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-        <v-toolbar-title>Title</v-toolbar-title>
+        <v-toolbar-title class="navigation" @click="navigateHome">TechShop</v-toolbar-title>
 
         <div class="d-flex justify-space-around">
           <v-btn
@@ -85,7 +104,13 @@ export default {
         </v-btn>
 
         <v-btn icon>
-          <v-icon>mdi-heart</v-icon>
+          <router-link
+              color="orange-lighten-2"
+              variant="text"
+              :to="'/shopping-cart'">
+          <v-icon>mdi-cart</v-icon>
+            <div class="cart-count">{{ cartItemsLength }}</div>
+          </router-link>
         </v-btn>
 
         <v-btn icon>
@@ -99,5 +124,19 @@ export default {
 <style scoped>
 .header {
   width: 100%;
+  background-color: white !important;
+}
+.cart-count {
+  position: absolute;
+  top: 3px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+.navigation {
+  cursor: pointer;
 }
 </style>

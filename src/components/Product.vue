@@ -11,9 +11,9 @@ export default {
       class="mx-auto"
       max-width="344"
   >
-    <v-img
-        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-        height="200px"
+    <v-img class="full"
+        :src="product.img"
+        height="200px" aspect-ratio="16/9"
     ></v-img>
 
     <div>
@@ -52,6 +52,20 @@ export default {
 <style scoped>
 .v-card--variant-elevated {
   width: 260px;
+}
+
+.v-card--variant-elevated {
+  width: 260px; /* Optional: Set the desired width for the v-card */
+}
+
+.full {
+  width: 100%;
+  max-width: 100%;
+  object-fit: fill;
+}
+
+::v-deep .v-img__img--contain {
+  object-fit: fill;
 }
 
 </style>
