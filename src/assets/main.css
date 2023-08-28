@@ -1,9 +1,5 @@
 /*@import './base.css';*/
 
-#app {
-    background-color: #ebebeb;
-    height: 955px;
-}
 .custom-card {
     border-style: groove;
     border-radius: 25px;
@@ -16,6 +12,11 @@
     border-radius: 10px;
     background-color: white;
     padding: 20px;
+}
+
+.custom-date {
+    height: 100%;
+    color: red;
 }
 
 * {

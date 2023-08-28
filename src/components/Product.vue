@@ -2,6 +2,11 @@
 
 export default {
   props: ["product"],
+  methods: {
+    navigateToProductDetails(productId) {
+      this.$router.push({ path: '/product/' + productId})
+    }
+  }
 }
 </script>
 
@@ -26,13 +31,10 @@ export default {
     </v-card-subtitle>
     </div>
     <v-card-actions>
-      <router-link
-          color="orange-lighten-2"
-          variant="text"
-       :to="'product/' + product.id">
-        Read more
-      </router-link>
-
+      <v-btn @click="navigateToProductDetails(product.id)" color="orange-lighten-2"
+             variant="text">
+          Read more
+      </v-btn>
       <v-spacer></v-spacer>
 
       <v-btn

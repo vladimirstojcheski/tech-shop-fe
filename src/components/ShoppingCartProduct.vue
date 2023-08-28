@@ -11,10 +11,10 @@ export default {
 </script>
 
 <template>
-  <div class="row mt-5 align-items-center custom-card">
+  <div class="row mt-5 align-items-center custom-card-2">
     <div class="col">
       <v-img
-          src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+          :src="product.img"
           height="200px"
       ></v-img>
     </div>

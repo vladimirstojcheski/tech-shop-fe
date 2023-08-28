@@ -12,16 +12,17 @@ import '@mdi/font/css/materialdesignicons.css'
 import {createRouter, createWebHistory} from 'vue-router'
 import Shop from "@/components/Shop.vue";
 import store from "@/store";
-import Vuex from 'vuex';
 import AddProduct from "@/components/AddProduct.vue";
 import ShoppingCart from "@/components/ShoppingCart.vue";
+import Checkout from "@/components/Checkout.vue";
 // import ProductDetails from "@/components/ProductDetails.vue";
 
 const routes = [
     { path: '/', component: Shop, name: "Home" },
     { path: '/product/:id', component: () => import('@/components/ProductDetails.vue'), name: "ProductDetails"},
     { path: '/product/add', component: AddProduct, name: "AddProduct"},
-    { path: '/shopping-cart', component: ShoppingCart, name: "ShoppingCart"}
+    { path: '/shopping-cart', component: ShoppingCart, name: "ShoppingCart"},
+    { path: '/checkout', component: Checkout, name: "Checkout"}
 ]
 
 const router = createRouter({
@@ -38,4 +39,5 @@ const vuetify= createVuetify({
 })
 
 createApp(App).use(router).use(store).use(vuetify).mount("#app")
+
 

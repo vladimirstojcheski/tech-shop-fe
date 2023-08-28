@@ -19,6 +19,9 @@ import { RouterView } from "vue-router"
 header {
   line-height: 1.5;
 }
+main {
+  height: 100%;
+}
 
 
 </style>

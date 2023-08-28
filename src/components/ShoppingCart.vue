@@ -41,7 +41,7 @@ export default {
           <ShoppingCartProduct @removeProduct="removeFromCart" :product="product"></ShoppingCartProduct>
         </div>
       </div>
-      <div class="col mt-5 custom-card">
+      <div class="col mt-5 custom-card-2">
         <h1 class="padding-bottom">Summary</h1>
         <div class="row align-items-center ">
           <div class="col">
@@ -72,7 +72,7 @@ export default {
 .padding-bottom {
   padding-bottom: 3vh;
 }
-.custom-card {
+.custom-card-2 {
   height: 100%;
 }
 
