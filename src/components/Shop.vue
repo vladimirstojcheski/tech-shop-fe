@@ -52,25 +52,41 @@ export default {
     },
 
     async getProducts(query) {
-      if (query.category !== undefined && query.category !== '') {
-        this.productModel.search.category = Number(query.category)
-      }
-      if (query.manufacturers !== undefined && query.manufacturers.length > 0) {
-        let manu = []
-        for (const value of query.manufacturers.split(',')) {
-          manu.push(Number(value))
+      if (Object.keys(query).length === 0) {
+        await axios.get('/api/products')
+            .then(data => this.products = data.data)
+            .catch(err => console.log(err))
+        for (const product of this.products) {
+          this.productModel.search.manufacturersToFilter.push(product.manufacturer_id)
         }
-        this.productModel.search.manufacturers = manu
+        await axios.get('/api/manufacturers')
+            .then(data => this.manufacturersToFilter = data.data)
+            .catch(err => console.log(err))
+      } else {
+        if (query.category !== undefined && query.category !== '') {
+          this.productModel.search.category = Number(query.category)
+          await axios.get('/api/manufacturers/' + query.category)
+              .then(data => this.manufacturersToFilter = data.data)
+              .catch(err => console.log(err))
+        } else {
+          await axios.get('/api/manufacturers')
+              .then(data => this.manufacturersToFilter = data.data)
+              .catch(err => console.log(err))
+        }
+        if (query.manufacturers !== undefined && query.manufacturers.length > 0) {
+          let manu = []
+          for (const value of query.manufacturers.split(',')) {
+            manu.push(Number(value))
+          }
+          this.productModel.search.manufacturers = manu
+        }
+        await axios.post('/api/products/all', this.productModel)
+            .then(data => this.products = data.data)
+            .catch(err => console.log(err))
+        for (const product of this.products) {
+          this.productModel.search.manufacturersToFilter.push(product.manufacturer_id)
+        }
       }
-      await axios.post('/api/products/all', this.productModel)
-          .then(data => this.products = data.data)
-          .catch(err => console.log(err))
-      for (const product of this.products) {
-        this.productModel.search.manufacturersToFilter.push(product.manufacturer_id)
-      }
-      await axios.get('/api/manufacturers/' + query.category)
-          .then(data => this.manufacturersToFilter = data.data)
-          .catch(err => console.log(err))
     }
   }
 }
@@ -80,7 +96,7 @@ export default {
 <template>
   <div class="container-fluid text-center">
     <div class="row gx-5">
-      <div class="col-xxl-2 custom-card">
+      <div class="col-xxl-2 custom-card-2">
         <Filter @filterManu="updateProducts" :manufacturersToFilter="manufacturersToFilter"/>
 <!--        <v-btn v-on:Click="showManu">Filter</v-btn>-->
 

@@ -5,7 +5,13 @@ export default {
   methods: {
     navigateToProductDetails(productId) {
       this.$router.push({ path: '/product/' + productId})
-    }
+    },
+    addToCart(product) {
+      console.log(product)
+      this.$store.dispatch('addProductToCart', product);
+      // Save cart data to local storage
+      localStorage.setItem('cart', JSON.stringify(this.$store.state.cart));
+    },
   }
 }
 </script>
@@ -37,7 +43,7 @@ export default {
       </v-btn>
       <v-spacer></v-spacer>
 
-      <v-btn
+      <v-btn @click="addToCart(product)"
           color="orange-lighten-2"
           variant="text"
       >

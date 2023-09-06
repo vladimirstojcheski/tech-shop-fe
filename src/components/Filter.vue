@@ -19,6 +19,13 @@ export default {
       this.manufacturers = [...this.selected];
     }
   },
+  async mounted() {
+    this.$watch( ()=> this.$route.query.manufacturers,async (value) => {
+      if (this.$route.query.manufacturers === undefined) {
+        this.selected = []
+      }
+    })
+  },
   methods: {
     ...mapMutations(['updateQuery']),
     setManufacturers() {

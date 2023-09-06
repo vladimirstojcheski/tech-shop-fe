@@ -29,6 +29,9 @@ export default {
       // Update local storage after removing item
       localStorage.setItem('cart', JSON.stringify(this.$store.state.cart));
     },
+    navigateToCheckout() {
+      this.$router.push({ path: '/checkout'})
+    }
   },
 }
 </script>
@@ -53,7 +56,7 @@ export default {
         </div>
         <div class="row">
           <div class="col padding-bottom">
-            <v-btn style="width: 100%" color="orange-lighten-2">CHECKOUT ({{this.products.length}})</v-btn>
+            <v-btn @click="navigateToCheckout()" style="width: 100%" color="orange-lighten-2">CHECKOUT ({{this.products.length}})</v-btn>
           </div>
         </div>
       </div>

@@ -45,6 +45,8 @@ export default {
       this.$router.push({ path: '/', query });
     },
     navigateHome() {
+      const query = {}
+      this.$store.dispatch('updateQuery', query);
       this.$router.push({ path: '/'})
     }
   },

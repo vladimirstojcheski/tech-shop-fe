@@ -14,6 +14,8 @@ export default {
       date: null,
       products: [],
       customerInfo: {
+        firstName: '',
+        lastName: '',
         deliveryAddress: {
           country: '',
           streetName: '',
@@ -21,7 +23,9 @@ export default {
           zipCode: '',
         },
         email: '',
-        phoneNumber: null
+        phoneNumber: null,
+        cardNumber: '',
+        ccv: ''
       },
     };
   },
@@ -39,34 +43,45 @@ export default {
   },
   methods: {
     async createOrder() {
-      // const formData = new FormData();
-      // formData.append('title', this.product.title);
-      // formData.append('description', this.product.description);
-      // formData.append('price', this.product.price);
-      // formData.append('category_id', this.product.category_id);
-      // formData.append('manufacturer_id', this.product.manufacturer_id);
-      // formData.append('img', this.selectedFile);
-      //
-      // try {
-      //   await axios.post('/api/products/create', formData, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      //   });
-      //
-      //   alert('Product created successfully');
-      //   // Clear form fields and image data
-      //   this.product.title = 'Test';
-      //   this.product.description = 'Test';
-      //   this.product.price = null;
-      //   this.product.category_id = null;
-      //   this.product.manufacturer_id = null;
-      //   this.product.img = null;
-      //   this.selectedFile = null;
-      // } catch (error) {
-      //   console.error('Error creating product:', error);
-      //   alert('An error occurred while creating the product.');
-      // }
+      const formData = new FormData();
+      formData.append('first_name', this.customerInfo.firstName);
+      formData.append('last_name', this.customerInfo.lastName);
+      formData.append('email', this.customerInfo.email);
+      formData.append('phone', this.customerInfo.phoneNumber);
+      formData.append('country', this.customerInfo.deliveryAddress.country);
+      formData.append('city', this.customerInfo.deliveryAddress.city);
+      formData.append('streetName', this.customerInfo.deliveryAddress.streetName);
+      formData.append('zip_code', this.customerInfo.deliveryAddress.zipCode);
+      formData.append('total_amount', this.calculateTotal);
+
+      let productIds = []
+      for (let product of this.products) {
+        productIds.push(product.id)
+      }
+      for (let productId of productIds) {
+        formData.append('products[]', productId);
+      }
+      try {
+        await axios.post('/api/order/create', formData, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        alert('Order created successfully');
+        // Clear form fields and image data
+        this.customerInfo.firstName = ''
+        this.customerInfo.lastName = ''
+        this.customerInfo.email = ''
+        this.customerInfo.phoneNumber = ''
+        this.customerInfo.deliveryAddress.country = ''
+        this.customerInfo.deliveryAddress.city = ''
+        this.customerInfo.deliveryAddress.streetName = ''
+        this.customerInfo.deliveryAddress.country.zipCode = ''
+      } catch (error) {
+        console.error('Error creating order:', error);
+        alert('An error occurred while creating the order.');
+      }
     },
   }
 }
@@ -79,14 +94,29 @@ export default {
         <div class="custom-card-2">
         <form @submit.prevent="createOrder">
           <div class="row">
+            <h3>Personal info</h3>
+            <div class="col">
+              <v-text-field
+                  v-model="customerInfo.firstName"
+                  label="First name"
+              ></v-text-field>
+            </div>
+            <div class="col">
+              <v-text-field
+                  v-model="customerInfo.lastName"
+                  label="Last Name"
+              ></v-text-field>
+            </div>
+          </div>
+          <div class="row">
             <div class="col">
               <h3>Delivery address</h3>
               <v-text-field
-                  v-model="customerInfo.country"
+                  v-model="customerInfo.deliveryAddress.country"
                   label="Country"
               ></v-text-field>
               <v-text-field
-                  v-model="customerInfo.city"
+                  v-model="customerInfo.deliveryAddress.city"
                   label="City"
               ></v-text-field>
             </div>
@@ -94,13 +124,13 @@ export default {
           <div class="row">
             <div class="col-xxl-10">
               <v-text-field
-                  v-model="customerInfo.streetName"
+                  v-model="customerInfo.deliveryAddress.streetName"
                   label="Street name"
               ></v-text-field>
             </div>
             <div class="col-xxl-2">
               <v-text-field
-                  v-model="customerInfo.zipCode"
+                  v-model="customerInfo.deliveryAddress.zipCode"
                   label="Zip"
               ></v-text-field>
             </div>
@@ -122,7 +152,7 @@ export default {
               <div class="row">
                 <div class="col">
                   <v-text-field
-                      v-model="customerInfo.phoneNumber"
+                      v-model="customerInfo.cardNumber"
                       label="Card number"
                       type="number"
                   ></v-text-field>
@@ -134,7 +164,7 @@ export default {
                 </div>
                 <div class="col">
                   <v-text-field
-                      v-model="customerInfo.phoneNumber"
+                      v-model="customerInfo.ccv"
                       label="CCV"
                       type="number"
                   ></v-text-field>
