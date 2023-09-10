@@ -147,7 +147,7 @@ TechShop Frontend is part of a comprehensive online shopping solution. While thi
 
 If you're interested in exploring or contributing to the backend component, you can find the associated repository here:
 
-- **Backend Repository**: [Link to Backend Repository](https://github.com/your-organization/tech-shop-be)
+- **Backend Repository**: [Link to Backend Repository](https://github.com/vladimirstojcheski/tech-shop-be)
 
 Feel free to visit the backend repository to learn more about its features and development. The synergy between the frontend and backend ensures a robust and secure online shopping experience.
 
