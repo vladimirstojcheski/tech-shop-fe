@@ -18,6 +18,12 @@
     height: 100%;
     color: red;
 }
+.right {
+    text-align: right;
+}
+.centered {
+    text-align: center;
+}
 
 * {
     font-family: Arial, serif;

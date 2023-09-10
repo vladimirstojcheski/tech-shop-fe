@@ -23,6 +23,9 @@ export default new Vuex.Store({
         removeFromCart(state, productId) {
             state.cart = state.cart.filter(item => item.id !== productId);
         },
+        emptyCart(state) {
+            state.cart = []
+        }
     },
     // You can add actions to update filters and commit mutations here
     actions: {
@@ -39,6 +42,9 @@ export default new Vuex.Store({
         removeProductFromCart({ commit }, productId) {
             commit('removeFromCart', productId);
         },
+        emptyProductsFromCart({commit}) {
+            commit('emptyCart')
+        }
     },
     getters: {
         cartItems: state => state.cart,

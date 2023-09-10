@@ -1,20 +1,26 @@
 <script>
 import axios from "axios";
+import {useToast} from "vue-toastification";
+import LoadingScreen from "@/components/LoadingScreen.vue";
 
 export default {
   name: "ProductDetails",
+  components: {LoadingScreen},
   data() {
     return {
       productId: '',
       product: [],
       userCountry: null,
+      isLoading: false
     }
   },
   async created() {
+    this.isLoading = true
     this.productId = this.$route.params['id'];
     await axios.get('/api/products/' + this.productId)
         .then(data => this.product = data.data)
         .catch(err => console.log(err))
+    this.isLoading = false
   },
   mounted() {
     this.getUserCountry();
@@ -51,20 +57,23 @@ export default {
       };
     },
     addToCart(product) {
+      const toast = useToast()
       console.log(product)
       this.$store.dispatch('addProductToCart', product);
       // Save cart data to local storage
       localStorage.setItem('cart', JSON.stringify(this.$store.state.cart));
+      toast.success('Product added to cart', {timeout: 3000})
     },
   },
 }
 </script>
 
 <template>
+  <LoadingScreen v-if="isLoading"/>
   <div class="container ">
     <div class="row custom-card-2 gx-5">
       <div class="col">
-        <v-img
+        <v-img v-if="product[0]"
             :width="450"
             aspect-ratio="16/9"
             cover
@@ -72,8 +81,13 @@ export default {
         ></v-img>
       </div>
       <div class="col">
-        {{ product[0].price }}$<hr>
-        <div v-html="product[0].description"></div>
+        <div v-if="product[0]">
+          <h2>{{ product[0].title }}</h2>
+          <hr>
+          <h3>{{ product[0].price }}$</h3>
+          <hr>
+          <div v-html="product[0].description"></div>
+        </div>
       </div>
       <div class="col">
         <div class="row border-bottom padd">

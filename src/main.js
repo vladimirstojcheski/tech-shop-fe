@@ -15,14 +15,22 @@ import store from "@/store";
 import AddProduct from "@/components/AddProduct.vue";
 import ShoppingCart from "@/components/ShoppingCart.vue";
 import Checkout from "@/components/Checkout.vue";
-// import ProductDetails from "@/components/ProductDetails.vue";
+import Order from "@/components/Order.vue";
+import Toast from 'vue-toastification'
+import "vue-toastification/dist/index.css"
+
+const toastOptions = {
+    position: 'bottom-right'
+}
 
 const routes = [
     { path: '/', component: Shop, name: "Home" },
     { path: '/product/:id', component: () => import('@/components/ProductDetails.vue'), name: "ProductDetails"},
     { path: '/product/add', component: AddProduct, name: "AddProduct"},
     { path: '/shopping-cart', component: ShoppingCart, name: "ShoppingCart"},
-    { path: '/checkout', component: Checkout, name: "Checkout"}
+    { path: '/checkout', component: Checkout, name: "Checkout"},
+    { path: '/order/:id', component: Order, name: "Order"},
+
 ]
 
 const router = createRouter({
@@ -38,6 +46,6 @@ const vuetify= createVuetify({
     ssr: true,
 })
 
-createApp(App).use(router).use(store).use(vuetify).mount("#app")
+createApp(App).use(router).use(store).use(vuetify).use(Toast, toastOptions).mount("#app")
 
 

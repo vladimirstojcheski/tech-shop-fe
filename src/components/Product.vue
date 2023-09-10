@@ -1,5 +1,7 @@
 <script>
 
+import {useToast} from "vue-toastification";
+
 export default {
   props: ["product"],
   methods: {
@@ -7,10 +9,12 @@ export default {
       this.$router.push({ path: '/product/' + productId})
     },
     addToCart(product) {
+      const toast = useToast()
       console.log(product)
       this.$store.dispatch('addProductToCart', product);
       // Save cart data to local storage
       localStorage.setItem('cart', JSON.stringify(this.$store.state.cart));
+      toast.success('Product added to cart', {timeout: 3000})
     },
   }
 }

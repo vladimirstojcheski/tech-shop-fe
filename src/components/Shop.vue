@@ -2,7 +2,7 @@
 import Product from "@/components/Product.vue";
 import Filter from "@/components/Filter.vue"
 import axios from "axios";
-import {mapState} from "vuex";
+import LoadingScreen from '@/components/LoadingScreen.vue';
 
 export class ProductModel {
   search;
@@ -17,13 +17,14 @@ export class ProductModel {
 
 }
 export default {
-  components: {Filter, Product},
+  components: {Filter, Product, LoadingScreen},
   props: ["category"],
   data() {
     return {
       products: [],
       productModel: new ProductModel(),
-      manufacturersToFilter: []
+      manufacturersToFilter: [],
+      isLoading: false
     }
   },
   async created() {
@@ -37,6 +38,7 @@ export default {
   },
   methods: {
     async updateProducts(event) {
+      this.isLoading = true
       if (event === undefined) {
         for (let i = 0; i < this.products.length; i++) {
           this.products[i].show = true
@@ -49,9 +51,11 @@ export default {
           this.products[i].show = true;
         }
       }
+      this.isLoading = false
     },
 
     async getProducts(query) {
+      this.isLoading = true
       if (Object.keys(query).length === 0) {
         await axios.get('/api/products')
             .then(data => this.products = data.data)
@@ -87,6 +91,7 @@ export default {
           this.productModel.search.manufacturersToFilter.push(product.manufacturer_id)
         }
       }
+      this.isLoading = false
     }
   }
 }
@@ -94,6 +99,7 @@ export default {
 </script>
 
 <template>
+  <LoadingScreen v-if="isLoading"/>
   <div class="container-fluid text-center">
     <div class="row gx-5">
       <div class="col-xxl-2 custom-card-2">

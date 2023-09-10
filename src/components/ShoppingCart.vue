@@ -43,6 +43,9 @@ export default {
         <div v-for="product in products" :key="product.id">
           <ShoppingCartProduct @removeProduct="removeFromCart" :product="product"></ShoppingCartProduct>
         </div>
+        <div v-if="products.length===0" class="custom-card-2 centered">
+          The cart is empty
+        </div>
       </div>
       <div class="col mt-5 custom-card-2">
         <h1 class="padding-bottom">Summary</h1>
@@ -76,7 +79,7 @@ export default {
   padding-bottom: 3vh;
 }
 .custom-card-2 {
-  height: 100%;
+  margin-top: 20px;
 }
 
 </style>

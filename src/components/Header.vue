@@ -4,12 +4,14 @@ import {mapActions, mapMutations, mapState} from "vuex";
 
 export default {
   created() {
-    if (JSON.parse(localStorage.getItem('cart')).length > 0) {
-      console.log(JSON.parse(localStorage.getItem('cart')))
-      this.products = JSON.parse(localStorage.getItem('cart'))
-      for (let productId in this.products) {
-        const product = this.products[productId];
-        this.$store.dispatch('addProductToCart', product);
+    if (localStorage.getItem('cart')) {
+      if (JSON.parse(localStorage.getItem('cart')).length > 0) {
+        console.log(JSON.parse(localStorage.getItem('cart')))
+        this.products = JSON.parse(localStorage.getItem('cart'))
+        for (let productId in this.products) {
+          const product = this.products[productId];
+          this.$store.dispatch('addProductToCart', product);
+        }
       }
     }
   },
@@ -60,10 +62,10 @@ export default {
         flat
         rounded="0"
     >
-      <v-toolbar class="header" density="compact">
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-toolbar class="header mar-right" density="compact">
 
-        <v-toolbar-title class="navigation" @click="navigateHome">TechShop</v-toolbar-title>
+
+        <v-toolbar-title class="navigation" @click="navigateHome"><img height="100" src="/src/assets/logo.png"></v-toolbar-title>
 
         <div class="d-flex justify-space-around">
           <v-btn
@@ -110,14 +112,11 @@ export default {
               color="orange-lighten-2"
               variant="text"
               :to="'/shopping-cart'">
-          <v-icon>mdi-cart</v-icon>
-            <div class="cart-count">{{ cartItemsLength }}</div>
+          <v-icon class="cart">mdi-cart</v-icon>
+            <div class="cart-count count">{{ cartItemsLength }}</div>
           </router-link>
         </v-btn>
 
-        <v-btn icon>
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
       </v-toolbar>
     </v-card>
   </div>
@@ -140,5 +139,9 @@ export default {
 }
 .navigation {
   cursor: pointer;
+}
+
+.mar-right {
+  padding-right: 60px;
 }
 </style>

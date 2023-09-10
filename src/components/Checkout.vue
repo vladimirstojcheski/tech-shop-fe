@@ -5,14 +5,21 @@ import ShoppingCartProduct from "@/components/ShoppingCartProduct.vue";
 import CheckoutProduct from "@/components/CheckoutProduct.vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import LoadingScreen from "@/components/LoadingScreen.vue";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "Checkout",
-  components: {VueDatePicker, CheckoutProduct, ShoppingCartProduct},
+  components: {LoadingScreen, VueDatePicker, CheckoutProduct, ShoppingCartProduct},
   data() {
     return {
       date: null,
       products: [],
+      isLoading: false,
+      showSnackbar: false,
+      snackbarMessage: '',
+      snackbarType: '',
+      orderId: '',
       customerInfo: {
         firstName: '',
         lastName: '',
@@ -43,7 +50,9 @@ export default {
   },
   methods: {
     async createOrder() {
+      this.isLoading = true
       const formData = new FormData();
+      const toast = useToast()
       formData.append('first_name', this.customerInfo.firstName);
       formData.append('last_name', this.customerInfo.lastName);
       formData.append('email', this.customerInfo.email);
@@ -66,9 +75,10 @@ export default {
           headers: {
             'Content-Type': 'application/json',
           },
-        });
-
-        alert('Order created successfully');
+        }).then(data => this.orderId = data.data.orderId);
+        toast.success('Order created successfully', {timeout: 3000})
+        this.$store.dispatch('emptyProductsFromCart');
+        localStorage.removeItem('cart');
         // Clear form fields and image data
         this.customerInfo.firstName = ''
         this.customerInfo.lastName = ''
@@ -77,17 +87,21 @@ export default {
         this.customerInfo.deliveryAddress.country = ''
         this.customerInfo.deliveryAddress.city = ''
         this.customerInfo.deliveryAddress.streetName = ''
-        this.customerInfo.deliveryAddress.country.zipCode = ''
+        this.customerInfo.deliveryAddress.zipCode = ''
+        this.isLoading = false
+        this.$router.push({ path: '/order/' + this.orderId})
       } catch (error) {
         console.error('Error creating order:', error);
-        alert('An error occurred while creating the order.');
+        toast.error(error.response.data.message , {timeout: 3000})
       }
+      this.isLoading = false
     },
   }
 }
 </script>
 
 <template>
+  <LoadingScreen v-if="isLoading"/>
   <div class="container px-4">
     <div class="row">
       <div class="col">
