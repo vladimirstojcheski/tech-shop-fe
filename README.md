@@ -2,9 +2,6 @@
 
 ![TechShop Logo](documentation/logo.png)
 
-TechShop Frontend is a Vue.js 3 application designed for online shopping. It offers a range of features to enhance the shopping experience, including product categorization, manufacturer filtering, product details, a shopping cart, and more. One notable feature is that the application ensures that reloading the page does not result in the loss of saved products in the cart.
-It makes api calls to a seperate backend application which can be found [here](https://github.com/vladimirstojcheski/tech-shop-be).
-
 ## Table of Contents
 
 - [Project Overview](#project-overview)
