@@ -1,58 +1,64 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-xxl-6 offset-3">
-        <input type="file" accept="image/*" @change="handleFileChange" />
-        <button @click="uploadPicture">Upload</button>
-        <form @submit.prevent="createProduct">
-          <v-text-field
-              v-model="product.title"
-              label="Product title"
-          ></v-text-field>
+        <div class="col-xxl-8 offset-2">
+          <div class="custom-card-2">
+          <input type="file" accept="image/*" @change="handleFileChange" />
+          <v-btn color="primary" @click="uploadPicture">Upload</v-btn>
+            <br>
+            <br>
+          <form @submit.prevent="createProduct">
+            <v-text-field
+                v-model="product.title"
+                label="Product title"
+            ></v-text-field>
 
-          <v-text-field
-              v-model="product.price"
-              label="Price"
-              type="number"
-          ></v-text-field>
+            <v-text-field
+                v-model="product.price"
+                label="Price"
+                type="number"
+            ></v-text-field>
 
-          <v-select
-              v-model="selectedCategory"
-              :items="categories"
-              label="Category"
-              item-title="name"
-              item-value="id"
-              @input="onCategorySelected"
-          ></v-select>
-          <v-select
-              v-model="product.category_id"
-              :items="subCategories"
-              label="Subcategory"
-              item-title="name"
-              item-value="id"
-          ></v-select>
+            <v-select
+                v-model="selectedCategory"
+                :items="categories"
+                label="Category"
+                item-title="name"
+                item-value="id"
+                @input="onCategorySelected"
+            ></v-select>
+            <v-select
+                v-model="product.category_id"
+                :items="subCategories"
+                label="Subcategory"
+                item-title="name"
+                item-value="id"
+            ></v-select>
 
-          <v-select
-              v-model="product.manufacturer_id"
-              :items="manufacturers"
-              label="Manufacturer"
-              item-title="name"
-              item-value="id"
-          ></v-select>
+            <v-select
+                v-model="product.manufacturer_id"
+                :items="manufacturers"
+                label="Manufacturer"
+                item-title="name"
+                item-value="id"
+            ></v-select>
 
-          <v-card
-              title="Description"
-          ><editor :init="{height: 450}" v-model="product.description"></editor>
-          </v-card>
+            <v-card
+                title="Description"
+            ><editor :init="{height: 450}" v-model="product.description"></editor>
+            </v-card>
+            <br>
 
-          <v-btn
-              class="me-4"
-              type="submit"
-          >
-            submit
-          </v-btn>
+            <v-btn
+                class="me-4"
+                type="submit"
+                color="primary"
+            >
+              Add Product
+            </v-btn>
 
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -69,6 +75,7 @@ export default {
   },
   data() {
     return {
+      access_token: '',
       selectedFile: null,
       product: {
         title: '',
@@ -114,7 +121,9 @@ export default {
       try {
         await axios.post('/api/products/create', formData, {
           headers: {
+            'Authorization' : 'Bearer ' + this.access_token,
             'Content-Type': 'multipart/form-data',
+            'Accept' : 'application/json'
           },
         });
 
@@ -161,6 +170,16 @@ export default {
   },
   created() {
     this.fetchCategories();
+    if (localStorage.getItem('userData')) {
+      this.access_token = JSON.parse(localStorage.getItem('userData')).access_token
+      const role = JSON.parse(localStorage.getItem('userData')).role
+      if (role !== 'admin') {
+        this.$router.push('/login')
+      }
+      this.isLoggedIn = true
+    } else {
+      this.$router.push('/login')
+    }
   },
   watch: {
     'selectedCategory': 'onCategorySelected',
@@ -172,5 +191,8 @@ export default {
 <style scoped>
 .form {
   width: 20px;
+}
+.custom-card-2 {
+  margin-top: 20px;
 }
 </style>

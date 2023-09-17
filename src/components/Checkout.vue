@@ -20,6 +20,9 @@ export default {
       snackbarMessage: '',
       snackbarType: '',
       orderId: '',
+      user: {},
+      access_token : '',
+      isLoggedIn: false,
       customerInfo: {
         firstName: '',
         lastName: '',
@@ -36,7 +39,21 @@ export default {
       },
     };
   },
-  created() {
+  async created() {
+    if (localStorage.getItem('userData')) {
+      this.access_token = JSON.parse(localStorage.getItem('userData')).access_token
+      this.isLoggedIn = true
+      await axios.get('/api/profile', {
+        headers: {
+          "Authorization": 'Bearer ' + this.access_token,
+          "Accept": "application/json"
+        }
+      })
+          .then(data => this.user = data.data.user)
+          .catch(err => console.log(err))
+      this.transformName(this.user.name)
+      this.populateForm()
+    }
     this.products = this.$store.state.cart;
   },
   computed: {
@@ -49,7 +66,23 @@ export default {
     }
   },
   methods: {
+    transformName(fullName) {
+      const split = fullName.split(' ')
+      this.customerInfo.firstName = split[0]
+      this.customerInfo.lastName = split[1]
+    },
+    populateForm() {
+      this.customerInfo.email = this.user.email
+      this.customerInfo.phoneNumber = this.user.phone_number
+      this.customerInfo.deliveryAddress.country = this.user.country
+      this.customerInfo.deliveryAddress.city = this.user.city
+      this.customerInfo.deliveryAddress.streetName = this.user.street_name
+      this.customerInfo.deliveryAddress.zipCode = this.user.zip
+    },
     async createOrder() {
+      if (!this.isLoggedIn) {
+        this.$router.push('/login')
+      }
       this.isLoading = true
       const formData = new FormData();
       const toast = useToast()
@@ -71,9 +104,11 @@ export default {
         formData.append('products[]', productId);
       }
       try {
+        console.log()
         await axios.post('/api/order/create', formData, {
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.access_token
           },
         }).then(data => this.orderId = data.data.orderId);
         toast.success('Order created successfully', {timeout: 3000})
@@ -220,6 +255,7 @@ export default {
 }
 .container {
   padding-top: 30px;
+  padding-bottom: 30px;
 }
 .main-col {
   padding: 20px

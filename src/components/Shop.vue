@@ -131,7 +131,7 @@ export default {
   padding-bottom: 40px;
 }
 
-.custom-card {
+.custom-card-2 {
   height: 100%;
 }
 </style>

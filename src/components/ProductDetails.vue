@@ -118,7 +118,8 @@ export default {
 
 <style scoped>
 .container {
-  padding-top: 5vh;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 .right {
   text-align: right;
@@ -137,10 +138,5 @@ export default {
   border-bottom: #181818;
   padding-bottom: 20px;
 }
-
-.border {
-  height: 100%;
-}
-.container {}
 
 </style>

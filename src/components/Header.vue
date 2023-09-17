@@ -1,9 +1,19 @@
 <script>
 import axios from "axios";
 import {mapActions, mapMutations, mapState} from "vuex";
+import LoadingScreen from "@/components/LoadingScreen.vue";
 
 export default {
+  components: {LoadingScreen},
   created() {
+    this.loggedInMenu.push({
+      name: 'Profile',
+      action: 1
+    })
+    this.loggedInMenu.push({
+      name: 'Logout',
+      action: 2
+    })
     if (localStorage.getItem('cart')) {
       if (JSON.parse(localStorage.getItem('cart')).length > 0) {
         console.log(JSON.parse(localStorage.getItem('cart')))
@@ -14,10 +24,17 @@ export default {
         }
       }
     }
+    if (localStorage.getItem('userData')) {
+      this.user = JSON.parse(localStorage.getItem('userData'))
+      this.isLoggedIn = true
+    }
   },
+
   data: () => ({
     query : '',
     items: [],
+    loggedInMenu: [],
+    isLoading: false,
     locations: [
       'top',
       'bottom',
@@ -25,9 +42,15 @@ export default {
       'end',
       'center',
     ],
-    location: 'end'
+    location: 'end',
+    user: {},
+    isLoggedIn: false
   }),
   async mounted() {
+    this.emitter.on('userLoggedIn',  (isLoggedIn) => {
+      this.user = JSON.parse(localStorage.getItem('userData'))
+      this.isLoggedIn = isLoggedIn;
+    });
     await axios.get('/api/categories/all')
         .then(data => this.items = data.data)
         .catch(err => console.log(err))
@@ -46,16 +69,44 @@ export default {
       this.$store.dispatch('updateQuery', query);
       this.$router.push({ path: '/', query });
     },
+    async menuAction(item) {
+      if (item.action === 1) {
+        this.$router.push({path: '/profile'})
+      } else {
+        this.isLoading = true
+        await axios.get('/api/logout', {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + this.user.access_token
+          },
+        }).then(data => this.isLoggedIn = false)
+            .catch(error => this.isLoading = false);
+        localStorage.removeItem('userData')
+
+        this.$router.push({ path: '/login'});
+        this.isLoading = false
+      }
+    },
     navigateHome() {
       const query = {}
       this.$store.dispatch('updateQuery', query);
       this.$router.push({ path: '/'})
+    },
+    navigateToProductForm() {
+      this.$router.push({ path: '/product/add'})
+    },
+    navigateToLogin() {
+      this.$router.push({ path: '/login'})
+    },
+    navigateToRegister() {
+      this.$router.push({ path: '/register'})
     }
   },
 }
 </script>
 
 <template>
+  <LoadingScreen v-if="isLoading"/>
   <div class="header">
     <v-card
         color="grey-lighten-4"
@@ -98,14 +149,16 @@ export default {
             </v-menu>
           </v-btn>
 
+          <v-btn v-if="isLoggedIn && user.role === 'admin'" @click="navigateToProductForm"
+              color="primary"
+          >
+            Add product
+          </v-btn>
 
         </div>
 
         <v-spacer></v-spacer>
 
-        <v-btn icon>
-          <v-icon>mdi:mdi-magnify</v-icon>
-        </v-btn>
 
         <v-btn icon>
           <router-link
@@ -115,6 +168,38 @@ export default {
           <v-icon class="cart">mdi-cart</v-icon>
             <div class="cart-count count">{{ cartItemsLength }}</div>
           </router-link>
+        </v-btn>
+
+        <div class="nav" v-if="!isLoggedIn">
+          <v-btn @click="navigateToLogin"
+                 color="primary"
+          >
+            Login
+          </v-btn>
+          <v-btn @click="navigateToRegister"
+                 color="primary"
+          >
+            Register
+          </v-btn>
+        </div>
+
+        <v-btn v-if="isLoggedIn"
+            color="primary" class="nav"
+        >
+          {{ user.name }}
+
+          <v-menu activator="parent">
+            <v-list>
+              <v-list-item
+                  v-for="(item, index) in loggedInMenu"
+                  :key="item.action"
+                  :value="item.action"
+                  @click="menuAction(item)"
+              >
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-btn>
 
       </v-toolbar>
@@ -142,6 +227,10 @@ export default {
 }
 
 .mar-right {
-  padding-right: 60px;
+  padding-right: 10px;
+}
+
+.nav {
+  margin-left: 20px;
 }
 </style>

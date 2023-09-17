@@ -2,6 +2,7 @@
 import Shop from "@/components/Shop.vue";
 import Header from "@/components/Header.vue";
 import { RouterView } from "vue-router"
+import Footer from "@/components/Footer.vue";
 
 </script>
 
@@ -13,6 +14,10 @@ import { RouterView } from "vue-router"
   <main>
     <RouterView />
   </main>
+
+  <footer>
+    <Footer/>
+  </footer>
 </template>
 
 <style scoped>
@@ -21,6 +26,7 @@ header {
 }
 main {
   height: 100%;
+  min-height: 86.6vh;
 }
 
 

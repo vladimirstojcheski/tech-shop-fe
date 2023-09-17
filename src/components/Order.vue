@@ -75,9 +75,11 @@ export default {
 </template>
 
 <style scoped>
-.custom-card-2 {
-  margin-top: 20px;
+
+.container {
+  padding-top: 30px;
 }
+
 img {
   width: 80px;
   height: 80px;

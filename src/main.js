@@ -18,6 +18,10 @@ import Checkout from "@/components/Checkout.vue";
 import Order from "@/components/Order.vue";
 import Toast from 'vue-toastification'
 import "vue-toastification/dist/index.css"
+import LoginForm from "@/components/LoginForm.vue";
+import RegisterForm from "@/components/RegisterForm.vue";
+import mitt from 'mitt'
+import Profile from "@/components/Profile.vue";
 
 const toastOptions = {
     position: 'bottom-right'
@@ -30,6 +34,9 @@ const routes = [
     { path: '/shopping-cart', component: ShoppingCart, name: "ShoppingCart"},
     { path: '/checkout', component: Checkout, name: "Checkout"},
     { path: '/order/:id', component: Order, name: "Order"},
+    { path: '/login' , component: LoginForm, name: "LoginForm"},
+    { path: '/register' , component: RegisterForm, name: "RegisterForm"},
+    { path: '/profile' , component: Profile, name: "Profile"},
 
 ]
 
@@ -46,6 +53,12 @@ const vuetify= createVuetify({
     ssr: true,
 })
 
-createApp(App).use(router).use(store).use(vuetify).use(Toast, toastOptions).mount("#app")
+const emitter = mitt()
+
+const app = createApp(App)
+app.use(router).use(store).use(vuetify).use(Toast, toastOptions)
+app.config.globalProperties.emitter = emitter
+app.mount('#app')
+
 
 
