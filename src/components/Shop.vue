@@ -133,5 +133,7 @@ export default {
 
 .custom-card-2 {
   height: 100%;
+  max-height: 35vh;
+  overflow: auto;
 }
 </style>
