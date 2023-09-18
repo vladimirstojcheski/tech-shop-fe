@@ -53,6 +53,8 @@ export default {
           .catch(err => console.log(err))
       this.transformName(this.user.name)
       this.populateForm()
+    } else {
+      this.$router.push('/login')
     }
     this.products = this.$store.state.cart;
   },
